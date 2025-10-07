@@ -15,6 +15,22 @@ const page = () => {
     const response = await axios.get("/api");
     setTodos(response.data.todos);
   }
+  /* delete todos */
+  const deleteTodo =async(mongoId)=>{
+      const response = await axios.delete('/api',{
+        params:{mongoId:mongoId}
+      });
+      
+      toast.success(response.data.message);
+      
+  }
+  /* complete todos */
+    const completeTodo =async(mongoId)=>{
+      const response = await axios.put('/api',{},{params:{mongoId:mongoId}});
+      
+      toast.success(response.data.message);
+      
+  }
   // handle input changes
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -36,18 +52,19 @@ const page = () => {
   };
   useEffect(()=>{
     fetchTodos()
-  },[])
+  },[todos])
   return (
     <div className="container mx-auto">
       <ToastContainer theme="dark" />
       {/* form */}
-      <form
-        onSubmit={onSubmitHandler}
-        className="w-full sm:max-w-2/4  border border-gray-200 p-5 mt-25 rounded mx-auto"
-      >
         <h1 className="text-xl w-28 capitalize mx-auto font-medium text-blue-900 border-b text-center my-5">
           Todo app
         </h1>
+      <form
+        onSubmit={onSubmitHandler}
+        className="w-full sm:max-w-2/4  border border-gray-200 p-5 mt-5 rounded mx-auto"
+      >
+
         <div className="flex flex-col gap-5">
           <input
             name="title"
@@ -88,10 +105,10 @@ const page = () => {
                 <th scope="col" className="px-6 py-3">
                   title
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 hidden sm:block">
                   description
                 </th>
-                <th scope="col" className="px-6 py-3">
+                <th scope="col" className="px-6 py-3 hidden sm:table-cell">
                   status
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -102,7 +119,7 @@ const page = () => {
             <tbody>
               {
                 todos.map((todos,index)=>(
-                  <TodoData key={index} id={index} title={todos.title} description ={todos.description} complete = {todos.isCompleted}  />
+                  <TodoData completeTodo={completeTodo} mongoId ={todos._id} deleteTodo ={deleteTodo} key={index} id={index} title={todos.title} description ={todos.description} complete = {todos.isCompleted}  />
                 ))
               }
               
