@@ -1,35 +1,51 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import TodoData from "./Components/TodoData";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
 const page = () => {
-  const [formData,setFormData] = useState({
-    title:"",
-    description:""
-  })
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+  });
+  const [todos,setTodos] = useState([]);
+
+  const fetchTodos =async()=>{
+    const response = await axios.get("/api");
+    setTodos(response.data.todos);
+  }
   // handle input changes
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const onSubmitHandler =async(e)=>{
-      e.preventDefault();
-
-      toast.success("Success")
-      try {
-        /* api call here to send data to backend */
-        console.log(formData)
-      } catch (error) {
-        toast.error("Error")
-      }
-  }
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      /* api call here to send data to backend */
+      const response = await axios.post("/api", formData);
+      toast.success(response.data.message);
+      setFormData({
+        title: "",
+        description: "",
+      });
+    } catch (error) {
+      toast.error("Error");
+    }
+  };
+  useEffect(()=>{
+    fetchTodos()
+  },[])
   return (
     <div className="container mx-auto">
-      <ToastContainer theme="dark"/>
+      <ToastContainer theme="dark" />
       {/* form */}
-      <form onSubmit={onSubmitHandler} className="w-full sm:max-w-2/4  border border-gray-200 p-5 mt-25 rounded mx-auto">
-        <h1 className="text-xl font-medium text-blue-900 text-center my-5">
+      <form
+        onSubmit={onSubmitHandler}
+        className="w-full sm:max-w-2/4  border border-gray-200 p-5 mt-25 rounded mx-auto"
+      >
+        <h1 className="text-xl w-28 capitalize mx-auto font-medium text-blue-900 border-b text-center my-5">
           Todo app
         </h1>
         <div className="flex flex-col gap-5">
@@ -51,7 +67,12 @@ const page = () => {
             value={formData.description}
           ></textarea>
           <div className="mx-auto">
-            <button type="submit" className="px-6 py-1  bg-blue-700 text-white hover:bg-blue-400 rounded-md my-2 cursor-pointer">Add Todo</button>
+            <button
+              type="submit"
+              className="px-6 py-1  bg-blue-700 text-white hover:bg-blue-400 rounded-md my-2 cursor-pointer"
+            >
+              Add Todo
+            </button>
           </div>
         </div>
       </form>
@@ -62,7 +83,7 @@ const page = () => {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                 id
+                  id
                 </th>
                 <th scope="col" className="px-6 py-3">
                   title
@@ -79,7 +100,12 @@ const page = () => {
               </tr>
             </thead>
             <tbody>
-                <TodoData/>
+              {
+                todos.map((todos,index)=>(
+                  <TodoData key={index} id={index} title={todos.title} description ={todos.description} complete = {todos.isCompleted}  />
+                ))
+              }
+              
             </tbody>
           </table>
         </div>
