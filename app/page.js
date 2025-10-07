@@ -4,7 +4,7 @@ import TodoData from "./Components/TodoData";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
-const page = () => {
+const Page = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
