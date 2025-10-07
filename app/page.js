@@ -102,13 +102,13 @@ const Page = () => {
                 <th scope="col" className="px-6 py-3">
                   id
                 </th>
-                <th scope="col" className="px-6 py-3 hidden sm:block">
+                <th scope="col" className="px-6 py-3">
                   title
                 </th>
                 <th scope="col" className="px-6 py-3">
                   description
                 </th>
-                <th scope="col" className="px-6 py-3 hidden sm:table-cell">
+                <th scope="col" className="px-6 py-3">
                   status
                 </th>
                 <th scope="col" className="px-6 py-3">
