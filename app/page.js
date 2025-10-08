@@ -11,8 +11,9 @@ const Page = () => {
   });
   const [todos,setTodos] = useState([]);
 
-  const fetchTodos =async()=>{
+  const fetchTodos = async()=>{
     const response = await axios.get("/api");
+    console.log(response.data);
     setTodos(response.data.todos);
   }
   /* delete todos */
@@ -22,6 +23,7 @@ const Page = () => {
       });
       
       toast.success(response.data.message);
+      fetchTodos();
       
   }
   /* complete todos */
@@ -29,6 +31,7 @@ const Page = () => {
       const response = await axios.put('/api',{},{params:{mongoId:mongoId}});
       
       toast.success(response.data.message);
+      fetchTodos();
       
   }
   // handle input changes
@@ -46,13 +49,14 @@ const Page = () => {
         title: "",
         description: "",
       });
+      fetchTodos();
     } catch (error) {
       toast.error("Error");
     }
   };
   useEffect(()=>{
     fetchTodos()
-  },[todos])
+  },[])
   return (
     <div className="container mx-auto">
       <ToastContainer theme="dark" />
@@ -109,7 +113,7 @@ const Page = () => {
                   description
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  status
+                  status and time
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Actions
@@ -119,7 +123,7 @@ const Page = () => {
             <tbody>
               {
                 todos.map((todos,index)=>(
-                  <TodoData completeTodo={completeTodo} mongoId ={todos._id} deleteTodo ={deleteTodo} key={index} id={index} title={todos.title} description ={todos.description} complete = {todos.isCompleted}  />
+                  <TodoData completeTodo={completeTodo} mongoId ={todos._id} deleteTodo ={deleteTodo} key={index} id={index} title={todos.title} createdAt={todos.createdAt} description ={todos.description} complete = {todos.isCompleted}  />
                 ))
               }
               
